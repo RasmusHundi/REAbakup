@@ -1,0 +1,191 @@
+
+!
+! Last configuration change at 08:23:30 CET Fri Sep 10 2021 by admin
+!
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R4
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$UCN.$dCjl27Sp3kFNTuQ1tTHo01
+!
+aaa new-model
+!
+!
+aaa group server radius AUTH
+ server-private 10.100.100.100 key 7 097C4F1A0A1218000F5D
+ server-private 172.16.112.101 key 7 097C4F1A0A1218000F5D
+ ip radius source-interface Loopback0
+!
+aaa authentication login SSH local group AUTH
+aaa authorization exec SSH local group AUTH 
+!
+!
+!
+!
+!
+aaa session-id common
+!
+!
+!
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+clock timezone CET 1 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip domain name group4
+ip cef
+login block-for 120 attempts 3 within 60
+login delay 10
+login quiet-mode access-class LOGIN-ACL
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+cts logging verbose
+!
+!
+archive
+ path ftp://172.16.112.102/R4
+ write-memory
+ time-period 60
+username admin password 7 082048430017
+username radiusadmin privilege 15 secret 5 $1$kF63$szh98Vuaqdvqs2xW5Zrwh1
+!
+redundancy
+!
+no cdp log mismatch duplex
+!
+ip tcp synwait-time 5
+ip ftp username ciscoftp
+ip ftp password 7 00341215174C04140B70
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 1.1.2.3 255.255.255.255
+!
+interface Ethernet0/0
+ description To Firewall
+ ip address 172.16.102.25 255.255.255.252
+!
+interface Ethernet0/1
+ description To dist-switch04
+ ip address 172.16.102.17 255.255.255.252
+!
+interface Ethernet0/2
+ description To R3
+ ip address 172.16.102.6 255.255.255.252
+!
+interface Ethernet0/3
+ description To dist-switch03
+ ip address 172.16.102.21 255.255.255.252
+!
+router ospf 1
+ router-id 1.1.2.3
+ area 2 stub no-summary
+ network 1.1.2.3 0.0.0.0 area 2
+ network 172.16.102.0 0.0.0.31 area 2
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip ospf name-lookup
+!
+ip access-list extended LOGIN-ACL
+ permit ip 172.16.101.64 0.0.0.31 0.0.0.0 7.7.7.7
+ permit ip 172.16.90.0 0.0.0.255 0.0.0.0 7.7.7.7
+ permit ip 172.16.96.0 0.0.31.255 0.0.0.0 7.7.7.7
+ permit ip 0.0.0.0 7.7.7.7 0.0.0.0 7.7.7.7
+!
+!
+snmp-server group rea v3 priv 
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+snmp-server enable traps ospf cisco-specific state-change shamlink interface
+snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+snmp-server enable traps ospf cisco-specific lsa
+snmp-server enable traps config
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+banner login UnAuthorized Access Is Punished
+banner motd Another day, Another Bug
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ authorization exec SSH
+ login authentication SSH
+ transport input ssh
+!
+ntp server 172.16.101.1
+!
+end

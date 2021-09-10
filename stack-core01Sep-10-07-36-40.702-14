@@ -1,0 +1,406 @@
+
+!
+! Last configuration change at 13:49:25 gmt Thu Sep 9 2021 by admin
+! NVRAM config last updated at 13:49:25 gmt Thu Sep 9 2021 by admin
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname Stack-Core01
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$J.hh$3elkPBC2SLaBwzFn90XV70
+!
+username admin password 7 070E25414707
+!
+!
+no aaa new-model
+clock timezone gmt 2
+switch 1 provision ws-c3750v2-48ts
+switch 2 provision ws-c3750v2-48ts
+system mtu routing 1500
+ip routing
+ip domain-name group4
+!
+!
+login block-for 120 attempts 3 within 60
+login delay 10
+login quiet-mode access-class LOGIN-ACL
+!
+!
+!
+!
+!
+!
+archive
+ path ftp://172.16.112.102/stack-core01
+ write-memory
+ time-period 60
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+ip ftp username ciscoftp
+ip ftp password 7 06360E325F59060B0146
+ip ssh version 2
+!
+!
+!
+interface Loopback0
+ ip address 2.2.2.1 255.255.255.255
+!
+interface Port-channel1
+ description Stack-Core01 to Router 1
+ no switchport
+ ip address 172.16.101.2 255.255.255.252
+ ip ospf cost 10
+!
+interface Port-channel2
+ description Stack-Core01 To Router 2
+ no switchport
+ ip address 172.16.101.6 255.255.255.252
+ ip ospf cost 100
+!
+interface Port-channel3
+ description Stack-Core01 To Stack-Dist01
+ no switchport
+ ip address 172.16.100.1 255.255.255.252
+!
+interface Port-channel4
+ description Stack-Core01 To Stack-Dist01
+ no switchport
+ ip address 172.16.100.5 255.255.255.252
+!
+interface FastEthernet1/0/1
+!
+interface FastEthernet1/0/2
+!
+interface FastEthernet1/0/3
+!
+interface FastEthernet1/0/4
+!
+interface FastEthernet1/0/5
+!
+interface FastEthernet1/0/6
+!
+interface FastEthernet1/0/7
+!
+interface FastEthernet1/0/8
+!
+interface FastEthernet1/0/9
+!
+interface FastEthernet1/0/10
+!
+interface FastEthernet1/0/11
+!
+interface FastEthernet1/0/12
+!
+interface FastEthernet1/0/13
+!
+interface FastEthernet1/0/14
+!
+interface FastEthernet1/0/15
+!
+interface FastEthernet1/0/16
+!
+interface FastEthernet1/0/17
+!
+interface FastEthernet1/0/18
+!
+interface FastEthernet1/0/19
+!
+interface FastEthernet1/0/20
+!
+interface FastEthernet1/0/21
+!
+interface FastEthernet1/0/22
+!
+interface FastEthernet1/0/23
+!
+interface FastEthernet1/0/24
+!
+interface FastEthernet1/0/25
+!
+interface FastEthernet1/0/26
+!
+interface FastEthernet1/0/27
+!
+interface FastEthernet1/0/28
+!
+interface FastEthernet1/0/29
+!
+interface FastEthernet1/0/30
+!
+interface FastEthernet1/0/31
+!
+interface FastEthernet1/0/32
+!
+interface FastEthernet1/0/33
+!
+interface FastEthernet1/0/34
+!
+interface FastEthernet1/0/35
+!
+interface FastEthernet1/0/36
+!
+interface FastEthernet1/0/37
+ description DHCP01
+ no switchport
+ ip address 172.16.101.65 255.255.255.240
+!
+interface FastEthernet1/0/38
+!
+interface FastEthernet1/0/39
+!
+interface FastEthernet1/0/40
+!
+interface FastEthernet1/0/41
+ description to Dist-Switch01
+ no switchport
+ no ip address
+ channel-group 3 mode on
+!
+interface FastEthernet1/0/42
+ description to Dist-Switch01
+ no switchport
+ no ip address
+ channel-group 3 mode on
+!
+interface FastEthernet1/0/43
+ description To Dist-Switch02
+ no switchport
+ no ip address
+ channel-group 4 mode on
+!
+interface FastEthernet1/0/44
+ description To Dist-Switch02
+ no switchport
+ no ip address
+ channel-group 4 mode on
+!
+interface FastEthernet1/0/45
+ no switchport
+ no ip address
+ shutdown
+!
+interface FastEthernet1/0/46
+ no switchport
+ no ip address
+ shutdown
+!
+interface FastEthernet1/0/47
+ description port to router 2
+ no switchport
+ no ip address
+ channel-group 2 mode on
+!
+interface FastEthernet1/0/48
+ description to Router1
+ no switchport
+ no ip address
+ channel-group 1 mode on
+!
+interface GigabitEthernet1/0/1
+!
+interface GigabitEthernet1/0/2
+!
+interface GigabitEthernet1/0/3
+!
+interface GigabitEthernet1/0/4
+!
+interface FastEthernet2/0/1
+!
+interface FastEthernet2/0/2
+!
+interface FastEthernet2/0/3
+!
+interface FastEthernet2/0/4
+!
+interface FastEthernet2/0/5
+!
+interface FastEthernet2/0/6
+!
+interface FastEthernet2/0/7
+!
+interface FastEthernet2/0/8
+!
+interface FastEthernet2/0/9
+!
+interface FastEthernet2/0/10
+!
+interface FastEthernet2/0/11
+!
+interface FastEthernet2/0/12
+!
+interface FastEthernet2/0/13
+!
+interface FastEthernet2/0/14
+!
+interface FastEthernet2/0/15
+!
+interface FastEthernet2/0/16
+!
+interface FastEthernet2/0/17
+!
+interface FastEthernet2/0/18
+!
+interface FastEthernet2/0/19
+!
+interface FastEthernet2/0/20
+!
+interface FastEthernet2/0/21
+!
+interface FastEthernet2/0/22
+!
+interface FastEthernet2/0/23
+!
+interface FastEthernet2/0/24
+!
+interface FastEthernet2/0/25
+!
+interface FastEthernet2/0/26
+!
+interface FastEthernet2/0/27
+!
+interface FastEthernet2/0/28
+!
+interface FastEthernet2/0/29
+!
+interface FastEthernet2/0/30
+!
+interface FastEthernet2/0/31
+!
+interface FastEthernet2/0/32
+!
+interface FastEthernet2/0/33
+!
+interface FastEthernet2/0/34
+!
+interface FastEthernet2/0/35
+!
+interface FastEthernet2/0/36
+!
+interface FastEthernet2/0/37
+ description To DHCP02
+ no switchport
+ ip address 172.16.101.81 255.255.255.240
+!
+interface FastEthernet2/0/38
+!
+interface FastEthernet2/0/39
+!
+interface FastEthernet2/0/40
+!
+interface FastEthernet2/0/41
+ description S1 to Dist-Switch02
+ no switchport
+ no ip address
+ channel-group 4 mode on
+!
+interface FastEthernet2/0/42
+ description S1 to Dist-Switch02
+ no switchport
+ no ip address
+ channel-group 4 mode on
+!
+interface FastEthernet2/0/43
+ description Core-Switch01 To Dist-Switch01
+ no switchport
+ no ip address
+ channel-group 3 mode on
+!
+interface FastEthernet2/0/44
+ description Core-Switch01 To Dist-Switch01
+ no switchport
+ no ip address
+ channel-group 3 mode on
+!
+interface FastEthernet2/0/45
+ no switchport
+ no ip address
+!
+interface FastEthernet2/0/46
+ no switchport
+ no ip address
+!
+interface FastEthernet2/0/47
+ description Switch1 to Router 2
+ no switchport
+ no ip address
+ channel-group 2 mode on
+!
+interface FastEthernet2/0/48
+ description Switch1 to Router 1
+ no switchport
+ no ip address
+ channel-group 1 mode on
+!
+interface GigabitEthernet2/0/1
+!
+interface GigabitEthernet2/0/2
+!
+interface GigabitEthernet2/0/3
+!
+interface GigabitEthernet2/0/4
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 2.2.2.1
+ log-adjacency-changes
+ area 1 stub
+ network 1.1.1.0 0.0.0.255 area 0
+ network 2.2.2.0 0.0.0.255 area 0
+ network 3.3.3.0 0.0.0.255 area 1
+ network 172.16.100.0 0.0.0.7 area 1
+ network 172.16.101.0 0.0.0.255 area 0
+!
+ip classless
+ip http server
+ip http secure-server
+!
+ip ospf name-lookup
+!
+ip access-list extended LOGIN-ACL
+ permit ip 172.16.101.64 0.0.0.31 0.0.0.0 7.7.7.7
+ permit ip 172.16.90.0 0.0.0.255 0.0.0.0 7.7.7.7
+ permit ip 172.16.96.0 0.0.31.255 0.0.0.0 7.7.7.7
+ permit ip 0.0.0.0 7.7.7.7 0.0.0.0 7.7.7.7
+!
+!
+snmp-server group rea v3 priv 
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+snmp-server enable traps ospf cisco-specific state-change shamlink interface-old
+snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+snmp-server enable traps ospf cisco-specific lsa
+snmp-server enable traps config
+!
+banner incoming PP popo
+banner login Unauthorized access will be punished
+banner motd Another Day, Another Bug
+!
+line con 0
+ login local
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login
+!
+ntp clock-period 36029354
+ntp server 172.16.101.1
+end

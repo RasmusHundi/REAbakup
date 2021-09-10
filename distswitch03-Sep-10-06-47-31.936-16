@@ -1,0 +1,212 @@
+
+!
+! Last configuration change at 06:34:41 UTC Fri Sep 10 2021
+! NVRAM config last updated at 06:34:42 UTC Fri Sep 10 2021
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname Dist-Switch03
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$FMJo$xbBuTMFD7jhX1cxzHUGwi0
+!
+username admin privilege 15 password 7 15130F010D24
+username radiusadmin privilege 15 secret 5 $1$c7oK$MnNtPGgzT1EmMSHGpeCSZ1
+aaa new-model
+!
+!
+aaa group server radius Radius-server
+!
+aaa group server radius AUTH
+ server-private 172.16.112.101 key 7 107E080A16001D190855
+ ip radius source-interface Loopback0
+!
+aaa authentication login SSH local group AUTH
+aaa authorization exec SSH local group AUTH 
+!
+!
+!
+!
+!
+!
+aaa session-id common
+!
+!
+!
+!
+!
+!
+!
+!
+ip domain-name group4
+ip cef
+login block-for 120 attempts 3 within 60
+login delay 10
+login quiet-mode access-class LOGIN-ACL
+no ipv6 cef
+!
+!
+archive
+ path ftp://172.16.112.102/distswitch03
+ write-memory
+ time-period 60
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 2.2.3.1 255.255.255.255
+!
+interface Loopback1
+ no ip address
+!
+interface GigabitEthernet0/0
+ description To R3
+ no switchport
+ ip address 172.16.102.10 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ description to Access-Switch03
+ no switchport
+ ip address 172.16.112.2 255.255.254.0
+ negotiation auto
+ glbp 10 ip 172.16.112.1
+ glbp 10 priority 150
+ glbp 10 preempt
+!
+interface GigabitEthernet0/2
+ description To R4
+ no switchport
+ ip address 172.16.102.22 255.255.255.252
+ duplex half
+ no negotiation auto
+!
+interface GigabitEthernet0/3
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ negotiation auto
+!
+interface GigabitEthernet1/1
+ negotiation auto
+!
+interface GigabitEthernet1/2
+ negotiation auto
+!
+interface GigabitEthernet1/3
+ negotiation auto
+!
+interface GigabitEthernet2/0
+ negotiation auto
+!
+interface GigabitEthernet2/1
+ negotiation auto
+!
+interface GigabitEthernet2/2
+ negotiation auto
+!
+interface GigabitEthernet2/3
+ negotiation auto
+!
+interface GigabitEthernet3/0
+ negotiation auto
+!
+interface GigabitEthernet3/1
+ negotiation auto
+!
+interface GigabitEthernet3/2
+ negotiation auto
+!
+interface GigabitEthernet3/3
+ negotiation auto
+!
+router ospf 1
+ router-id 2.2.3.1
+ area 2 stub no-summary
+ network 2.2.3.1 0.0.0.0 area 2
+ network 172.16.102.0 0.0.0.31 area 2
+ network 172.16.112.0 0.0.1.255 area 2
+!
+ip forward-protocol nd
+!
+ip http server
+!
+ip ftp username ciscoftp
+ip ftp password 7 142713181F1325392079
+ip ospf name-lookup
+ip ssh version 2
+ip ssh server algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+ip access-list extended LOGIN-ACL
+ permit ip 172.16.101.64 0.0.0.31 0.0.0.0 7.7.7.7
+ permit ip 172.16.90.0 0.0.0.255 0.0.0.0 7.7.7.7
+ permit ip 172.16.96.0 0.0.31.255 0.0.0.0 7.7.7.7
+ permit ip 0.0.0.0 7.7.7.7 0.0.0.0 7.7.7.7
+!
+ip radius source-interface Loopback1 
+!
+!
+!
+snmp-server group rea v3 priv 
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+snmp-server enable traps ospf cisco-specific state-change shamlink interface
+snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+snmp-server enable traps ospf cisco-specific lsa
+snmp-server enable traps hsrp
+!
+!
+radius server Radius
+ address ipv4 172.168.112.101 auth-port 1645 acct-port 1646
+ key 7 111B1C0405130F051139
+!
+!
+control-plane
+!
+banner exec 
+
+banner incoming 
+banner incoming a
+
+banner login nAuthorized Access Is Punished by death
+~ 
+banner motd Another day, Another Bug
+!
+line con 0
+line aux 0
+line vty 0 4
+ authorization exec SSH
+ login authentication SSH
+ transport input ssh
+!
+ntp server 172.16.101.1
+!
+end

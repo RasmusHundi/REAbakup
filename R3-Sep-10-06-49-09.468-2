@@ -1,0 +1,210 @@
+
+!
+! Last configuration change at 06:34:46 UTC Fri Sep 10 2021
+! NVRAM config last updated at 06:34:46 UTC Fri Sep 10 2021
+!
+version 15.7
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R3
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$3zTY$uxFoagQtnsPY2buCCAPmH.
+!
+aaa new-model
+!
+!
+aaa group server radius AUTH
+ server-private 172.16.112.101 key 7 03345A1815182E5E4A58
+ ip radius source-interface Loopback0
+!
+aaa authentication login SSH local group AUTH
+aaa authorization exec SSH local group AUTH 
+!
+!
+!
+!
+!
+aaa session-id common
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip domain name group4
+ip cef
+login block-for 120 attempts 3 within 60
+login delay 10
+login quiet-mode access-class LOGIN-ACL
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+archive
+ path ftp://172.16.112.102/R3
+ write-memory
+ time-period 60
+username admin password 7 0005170B0D55
+username radiusadmin privilege 15 secret 5 $1$23C9$vE.9qYmolFZA.vQOJZZ3b1
+!
+redundancy
+!
+no cdp log mismatch duplex
+!
+ip tcp synwait-time 5
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 1.1.2.2 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description To Firewall
+ ip address 172.16.102.2 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description To dist-switch03
+ ip address 172.16.102.9 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ description To R4
+ ip address 172.16.102.5 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ description To dist-switch04
+ ip address 172.16.102.13 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+router ospf 1
+ router-id 1.1.2.2
+ area 2 stub no-summary
+ network 1.1.2.2 0.0.0.0 area 2
+ network 172.16.102.0 0.0.0.31 area 2
+!
+ip forward-protocol nd
+!
+!
+ip ftp username ciscoftp
+ip ftp password 7 12290404011C03162E7A
+no ip http server
+no ip http secure-server
+ip ospf name-lookup
+ip ssh version 2
+!
+ip access-list extended LOGIN-ACL
+ permit ip 172.16.101.64 0.0.0.31 0.0.0.0 7.7.7.7
+ permit ip 172.16.90.0 0.0.0.255 0.0.0.0 7.7.7.7
+ permit ip 172.16.96.0 0.0.31.255 0.0.0.0 7.7.7.7
+ permit ip 0.0.0.0 7.7.7.7 0.0.0.0 7.7.7.7
+!
+ipv6 ioam timestamp
+!
+snmp-server group rea v3 priv 
+snmp-server chassis-id 
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps ospf cisco-specific state-change nssa-trans-change
+snmp-server enable traps ospf cisco-specific state-change shamlink interface
+snmp-server enable traps ospf cisco-specific state-change shamlink neighbor
+snmp-server enable traps ospf cisco-specific errors
+snmp-server enable traps ospf cisco-specific retransmit
+snmp-server enable traps ospf cisco-specific lsa
+snmp-server enable traps config
+!
+!
+!
+!
+control-plane
+!
+banner exec 
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************
+banner incoming 
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************
+banner login 
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************
+banner motd Another day, Another Bug
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ authorization exec SSH
+ login authentication SSH
+ transport input ssh
+!
+no scheduler allocate
+ntp server 172.16.101.1
+!
+end
